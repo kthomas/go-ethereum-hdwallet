@@ -1,17 +1,14 @@
-# github.com/btcsuite/btcd v0.22.1
-## explicit; go 1.17
+# github.com/aristanetworks/goarista v0.0.0-20180627184309-2c5933638c5e
+## explicit
+github.com/aristanetworks/goarista/monotime
+# github.com/btcsuite/btcd v0.0.0-20180531025944-86fed781132a
+## explicit
 github.com/btcsuite/btcd/btcec
 github.com/btcsuite/btcd/chaincfg
-github.com/btcsuite/btcd/wire
-# github.com/btcsuite/btcd/btcec/v2 v2.2.0
-## explicit; go 1.17
-github.com/btcsuite/btcd/btcec/v2
-github.com/btcsuite/btcd/btcec/v2/ecdsa
-# github.com/btcsuite/btcd/chaincfg/chainhash v1.0.1
-## explicit; go 1.17
 github.com/btcsuite/btcd/chaincfg/chainhash
-# github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce
-## explicit; go 1.14
+github.com/btcsuite/btcd/wire
+# github.com/btcsuite/btcutil v0.0.0-20180524032703-d4cc87b86016
+## explicit
 github.com/btcsuite/btcutil
 github.com/btcsuite/btcutil/base58
 github.com/btcsuite/btcutil/bech32
@@ -19,12 +16,8 @@ github.com/btcsuite/btcutil/hdkeychain
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
 github.com/davecgh/go-spew/spew
-# github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
-## explicit; go 1.16
-github.com/decred/dcrd/dcrec/secp256k1/v4
-github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa
-# github.com/ethereum/go-ethereum v1.10.17
-## explicit; go 1.15
+# github.com/ethereum/go-ethereum v1.8.11
+## explicit
 github.com/ethereum/go-ethereum
 github.com/ethereum/go-ethereum/accounts
 github.com/ethereum/go-ethereum/common
@@ -34,22 +27,49 @@ github.com/ethereum/go-ethereum/common/mclock
 github.com/ethereum/go-ethereum/core/types
 github.com/ethereum/go-ethereum/crypto
 github.com/ethereum/go-ethereum/crypto/secp256k1
-github.com/ethereum/go-ethereum/crypto/secp256k1/libsecp256k1/include
-github.com/ethereum/go-ethereum/crypto/secp256k1/libsecp256k1/src
-github.com/ethereum/go-ethereum/crypto/secp256k1/libsecp256k1/src/modules/recovery
+github.com/ethereum/go-ethereum/crypto/sha3
+github.com/ethereum/go-ethereum/ethdb
 github.com/ethereum/go-ethereum/event
+github.com/ethereum/go-ethereum/log
+github.com/ethereum/go-ethereum/metrics
 github.com/ethereum/go-ethereum/params
 github.com/ethereum/go-ethereum/rlp
-github.com/ethereum/go-ethereum/rlp/internal/rlpstruct
-# github.com/tyler-smith/go-bip39 v1.1.0
-## explicit; go 1.14
+github.com/ethereum/go-ethereum/trie
+# github.com/go-stack/stack v1.7.0
+## explicit
+github.com/go-stack/stack
+# github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db
+## explicit
+github.com/golang/snappy
+# github.com/onsi/ginkgo v1.16.5
+## explicit; go 1.16
+# github.com/onsi/gomega v1.30.0
+## explicit; go 1.18
+# github.com/stretchr/testify v1.8.4
+## explicit; go 1.20
+# github.com/syndtr/goleveldb v0.0.0-20180621010148-0d5a0ceb10cf
+## explicit
+github.com/syndtr/goleveldb/leveldb
+github.com/syndtr/goleveldb/leveldb/cache
+github.com/syndtr/goleveldb/leveldb/comparer
+github.com/syndtr/goleveldb/leveldb/errors
+github.com/syndtr/goleveldb/leveldb/filter
+github.com/syndtr/goleveldb/leveldb/iterator
+github.com/syndtr/goleveldb/leveldb/journal
+github.com/syndtr/goleveldb/leveldb/memdb
+github.com/syndtr/goleveldb/leveldb/opt
+github.com/syndtr/goleveldb/leveldb/storage
+github.com/syndtr/goleveldb/leveldb/table
+github.com/syndtr/goleveldb/leveldb/util
+# github.com/tyler-smith/go-bip39 v0.0.0-20180618194314-52158e4697b8
+## explicit
 github.com/tyler-smith/go-bip39
-github.com/tyler-smith/go-bip39/wordlists
-# golang.org/x/crypto v0.0.0-20220518034528-6f7dac969898
-## explicit; go 1.17
+# golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+## explicit; go 1.11
 golang.org/x/crypto/pbkdf2
 golang.org/x/crypto/ripemd160
-golang.org/x/crypto/sha3
-# golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a
-## explicit; go 1.17
-golang.org/x/sys/cpu
+# gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c
+## explicit; go 1.11
+# gopkg.in/karalabe/cookiejar.v2 v2.0.0-20150724131613-8dcd6a7f4951
+## explicit
+gopkg.in/karalabe/cookiejar.v2/collections/prque

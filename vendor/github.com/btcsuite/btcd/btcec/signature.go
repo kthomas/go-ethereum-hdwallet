@@ -85,11 +85,6 @@ func (sig *Signature) IsEqual(otherSig *Signature) bool {
 		sig.S.Cmp(otherSig.S) == 0
 }
 
-// MinSigLen is the minimum length of a DER encoded signature and is when both R
-// and S are 1 byte each.
-// 0x30 + <1-byte> + 0x02 + 0x01 + <byte> + 0x2 + 0x01 + <byte>
-const MinSigLen = 8
-
 func parseSig(sigStr []byte, curve elliptic.Curve, der bool) (*Signature, error) {
 	// Originally this code used encoding/asn1 in order to parse the
 	// signature, but a number of problems were found with this approach.
@@ -103,7 +98,9 @@ func parseSig(sigStr []byte, curve elliptic.Curve, der bool) (*Signature, error)
 
 	signature := &Signature{}
 
-	if len(sigStr) < MinSigLen {
+	// minimal message is when both numbers are 1 bytes. adding up to:
+	// 0x30 + len + 0x02 + 0x01 + <byte> + 0x2 + 0x01 + <byte>
+	if len(sigStr) < 8 {
 		return nil, errors.New("malformed signature: too short")
 	}
 	// 0x30
@@ -115,10 +112,7 @@ func parseSig(sigStr []byte, curve elliptic.Curve, der bool) (*Signature, error)
 	// length of remaining message
 	siglen := sigStr[index]
 	index++
-
-	// siglen should be less than the entire message and greater than
-	// the minimal message size.
-	if int(siglen+2) > len(sigStr) || int(siglen+2) < MinSigLen {
+	if int(siglen+2) > len(sigStr) {
 		return nil, errors.New("malformed signature: bad length")
 	}
 	// trim the slice we're working on so we only look at what matters.
@@ -276,7 +270,7 @@ func hashToInt(hash []byte, c elliptic.Curve) *big.Int {
 }
 
 // recoverKeyFromSignature recovers a public key from the signature "sig" on the
-// given message hash "msg". Based on the algorithm found in section 4.1.6 of
+// given message hash "msg". Based on the algorithm found in section 5.1.5 of
 // SEC 1 Ver 2.0, page 47-48 (53 and 54 in the pdf). This performs the details
 // in the inner loop in Step 1. The counter provided is actually the j parameter
 // of the loop * 2 - on the first iteration of j we do the R case, else the -R
@@ -284,25 +278,6 @@ func hashToInt(hash []byte, c elliptic.Curve) *big.Int {
 // format and thus we match bitcoind's behaviour here.
 func recoverKeyFromSignature(curve *KoblitzCurve, sig *Signature, msg []byte,
 	iter int, doChecks bool) (*PublicKey, error) {
-	// Parse and validate the R and S signature components.
-	//
-	// Fail if r and s are not in [1, N-1].
-	if sig.R.Cmp(curve.Params().N) != -1 {
-		return nil, errors.New("signature R is >= curve order")
-	}
-
-	if sig.R.Sign() == 0 {
-		return nil, errors.New("signature R is 0")
-	}
-
-	if sig.S.Cmp(curve.Params().N) != -1 {
-		return nil, errors.New("signature S is >= curve order")
-	}
-
-	if sig.S.Sign() == 0 {
-		return nil, errors.New("signature S is 0")
-	}
-
 	// 1.1 x = (n * i) + r
 	Rx := new(big.Int).Mul(curve.Params().N,
 		new(big.Int).SetInt64(int64(iter/2)))
@@ -412,7 +387,7 @@ func SignCompact(curve *KoblitzCurve, key *PrivateKey,
 
 // RecoverCompact verifies the compact signature "signature" of "hash" for the
 // Koblitz curve in "curve". If the signature matches then the recovered public
-// key will be returned as well as a boolean if the original key was compressed
+// key will be returned as well as a boolen if the original key was compressed
 // or not, else an error will be returned.
 func RecoverCompact(curve *KoblitzCurve, signature,
 	hash []byte) (*PublicKey, bool, error) {
@@ -446,7 +421,9 @@ func signRFC6979(privateKey *PrivateKey, hash []byte) (*Signature, error) {
 	k := nonceRFC6979(privkey.D, hash)
 	inv := new(big.Int).ModInverse(k, N)
 	r, _ := privkey.Curve.ScalarBaseMult(k.Bytes())
-	r.Mod(r, N)
+	if r.Cmp(N) == 1 {
+		r.Sub(r, N)
+	}
 
 	if r.Sign() == 0 {
 		return nil, errors.New("calculated R is zero")

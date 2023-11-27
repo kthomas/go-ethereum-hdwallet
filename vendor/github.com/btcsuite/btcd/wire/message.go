@@ -57,7 +57,6 @@ const (
 	CmdCFilter      = "cfilter"
 	CmdCFHeaders    = "cfheaders"
 	CmdCFCheckpt    = "cfcheckpt"
-	CmdSendAddrV2   = "sendaddrv2"
 )
 
 // MessageEncoding represents the wire message encoding format to be used.
@@ -99,9 +98,6 @@ func makeEmptyMessage(command string) (Message, error) {
 
 	case CmdVerAck:
 		msg = &MsgVerAck{}
-
-	case CmdSendAddrV2:
-		msg = &MsgSendAddrV2{}
 
 	case CmdGetAddr:
 		msg = &MsgGetAddr{}
@@ -217,7 +213,7 @@ func readMessageHeader(r io.Reader) (int, *messageHeader, error) {
 	readElements(hr, &hdr.magic, &command, &hdr.length, &hdr.checksum)
 
 	// Strip trailing zeros from command string.
-	hdr.command = string(bytes.TrimRight(command[:], "\x00"))
+	hdr.command = string(bytes.TrimRight(command[:], string(0)))
 
 	return n, &hdr, nil
 }
@@ -325,13 +321,9 @@ func WriteMessageWithEncodingN(w io.Writer, msg Message, pver uint32,
 		return totalBytes, err
 	}
 
-	// Only write the payload if there is one, e.g., verack messages don't
-	// have one.
-	if len(payload) > 0 {
-		n, err = w.Write(payload)
-		totalBytes += n
-	}
-
+	// Write payload.
+	n, err = w.Write(payload)
+	totalBytes += n
 	return totalBytes, err
 }
 
@@ -405,7 +397,7 @@ func ReadMessageWithEncodingN(r io.Reader, pver uint32, btcnet BitcoinNet,
 
 	// Test checksum.
 	checksum := chainhash.DoubleHashB(payload)[0:4]
-	if !bytes.Equal(checksum, hdr.checksum[:]) {
+	if !bytes.Equal(checksum[:], hdr.checksum[:]) {
 		str := fmt.Sprintf("payload checksum failed - header "+
 			"indicates %v, but actual checksum is %v.",
 			hdr.checksum, checksum)
